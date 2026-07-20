@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>WK WhatsApp — Relatórios por assunto</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="loadingScreen">Carregando conversa padrão...</div>
+<div id="app" style="visibility:hidden">
+  <div id="sidebar">
+    <div id="uploadPanel">
+      <div class="upTitle">Gerar novo relatório</div>
+      <div id="dropzone">
+        <div class="dzIcon">📎</div>
+        <div class="dzText">Anexe um export do WhatsApp<br>(.zip ou .txt) — clique ou arraste aqui</div>
+      </div>
+      <input id="fileInput" type="file" accept=".zip,.txt,.json">
+      <div id="fileName"></div>
+      <button id="genBtn">Gerar relatório por assunto</button>
+      <div id="uploadStatus"></div>
+      <button id="restoreBtn">↺ Voltar para a conversa padrão</button>
+    </div>
+    <h1 id="convTitle">Conversa com Eliseu</h1>
+    <div class="sub" id="convSub">carregando...</div>
+    <div id="sidebarScroll">
+      <div class="section-title">Assuntos</div>
+      <div id="catlist"></div>
+      <div class="section-title">Minhas pesquisas salvas</div>
+      <div id="savedlist"></div>
+    </div>
+  </div>
+  <div id="main">
+    <div id="topbar">
+      <div class="aiRow">
+        <input id="aiInput" type="text" placeholder='Pergunte algo, ex: "pagamentos acima de 1000 em 2025" ou "conversas sobre o Rodrigo em julho de 2024"'>
+        <button id="aiBtn">Perguntar</button>
+        <button id="saveBtn">💾 Salvar pesquisa</button>
+        <button id="downloadBtn">⬇️ Baixar relatório (.json)</button>
+      </div>
+      <div class="filterRow">
+        <input id="search" type="text" placeholder="busca simples por palavra...">
+        <input id="dateFrom" class="dateinput" type="date" title="De">
+        <input id="dateTo" class="dateinput" type="date" title="Até">
+        <button id="clearBtn">Limpar filtros</button>
+      </div>
+    </div>
+    <div id="chips"></div>
+    <div id="resultInfo"></div>
+    <div id="feed"></div>
+  </div>
+</div>
+
+<script src="assets/js/fflate.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

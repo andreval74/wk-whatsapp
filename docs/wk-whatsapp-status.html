@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WK WhatsApp: Estado do Projeto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-body: 'DM Sans', system-ui, sans-serif;
+    --font-mono: 'Fira Code', 'SF Mono', Consolas, monospace;
+
+    --bg: #f6f7fb;
+    --surface: #ffffff;
+    --surface2: #edf0f7;
+    --surface-elevated: #ffffff;
+    --border: rgba(15, 23, 42, 0.08);
+    --border-bright: rgba(15, 23, 42, 0.16);
+    --text: #0f1729;
+    --text-dim: #5b6577;
+
+    --blue: #1e3a8a;
+    --blue-dim: rgba(30, 58, 138, 0.08);
+    --gold: #b45309;
+    --gold-dim: rgba(180, 83, 9, 0.08);
+    --green: #15803d;
+    --green-dim: rgba(21, 128, 61, 0.08);
+    --slate: #334155;
+    --slate-dim: rgba(51, 65, 85, 0.08);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0b1220;
+      --surface: #121a2b;
+      --surface2: #182338;
+      --surface-elevated: #182338;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-bright: rgba(255, 255, 255, 0.16);
+      --text: #e7ebf5;
+      --text-dim: #94a1b8;
+
+      --blue: #7fa6ff;
+      --blue-dim: rgba(127, 166, 255, 0.14);
+      --gold: #fbbf24;
+      --gold-dim: rgba(251, 191, 36, 0.14);
+      --green: #4ade80;
+      --green-dim: rgba(74, 222, 128, 0.14);
+      --slate: #b7c1d6;
+      --slate-dim: rgba(183, 193, 214, 0.12);
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 15% -10%, var(--blue-dim) 0%, transparent 45%),
+      radial-gradient(ellipse at 90% 110%, var(--gold-dim) 0%, transparent 40%);
+    color: var(--text);
+    font-family: var(--font-body);
+    padding: 40px;
+    min-height: 100vh;
+  }
+
+  .container { max-width: 1080px; margin: 0 auto; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate { animation: fadeUp 0.4s ease-out both; animation-delay: calc(var(--i, 0) * 0.05s); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  h1 { font-size: 36px; font-weight: 700; letter-spacing: -1px; margin-bottom: 6px; text-wrap: balance; }
+  .subtitle { color: var(--text-dim); font-family: var(--font-mono); font-size: 12px; margin-bottom: 20px; }
+  .description { font-size: 14px; line-height: 1.7; color: var(--text-dim); margin-bottom: 32px; max-width: 760px; }
+  .description code {
+    font-family: var(--font-mono); font-size: 12px; background: var(--blue-dim); color: var(--blue);
+    padding: 1px 5px; border-radius: 3px;
+  }
+
+  h2 {
+    font-size: 20px; font-weight: 700; margin: 40px 0 16px;
+  }
+
+  /* ---------- Mermaid diagram shell ---------- */
+  .diagram-shell { position: relative; margin-bottom: 8px; }
+  .diagram-shell__hint { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); margin-bottom: 8px; opacity: 0.75; }
+  .mermaid-wrap {
+    position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px 20px; overflow: auto; display: flex; justify-content: center; align-items: center;
+    min-height: 380px; cursor: grab;
+  }
+  .mermaid-wrap.is-panning { cursor: grabbing; user-select: none; }
+  .zoom-controls {
+    position: absolute; top: 8px; right: 8px; display: flex; gap: 2px; z-index: 10;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 2px;
+  }
+  .zoom-controls button {
+    width: 28px; height: 28px; border: none; background: transparent; color: var(--text-dim);
+    font-family: var(--font-mono); font-size: 14px; cursor: pointer; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center; transition: background 0.15s ease, color 0.15s ease;
+  }
+  .zoom-controls button:hover { background: var(--border); color: var(--text); }
+  .mermaid-viewport { position: relative; overflow: hidden; width: 100%; height: 100%; min-height: 300px; }
+  .mermaid-canvas { position: absolute; top: 0; left: 0; }
+  .zoom-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); padding: 0 6px; white-space: nowrap; }
+  .mermaid .nodeLabel { font-family: var(--font-body) !important; font-size: 15px !important; }
+  .mermaid .edgeLabel { font-family: var(--font-mono) !important; font-size: 12px !important; }
+  .mermaid .cluster rect { rx: 10px; }
+
+  /* ---------- Card grid ---------- */
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px;
+  }
+  .card .title { font-weight: 600; font-size: 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .card .title .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+  .card--blue .title .dot { background: var(--blue); }
+  .card--gold .title .dot { background: var(--gold); }
+  .card .title code {
+    font-family: var(--font-mono); font-size: 11px; background: var(--surface2); color: var(--text-dim);
+    padding: 1px 6px; border-radius: 4px;
+  }
+  .card .desc { color: var(--text-dim); font-size: 12.5px; line-height: 1.6; }
+
+  /* ---------- Callout list ---------- */
+  .callout-list { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 22px; }
+  .callout-list li { list-style: none; font-size: 13px; line-height: 1.9; padding-left: 18px; position: relative; }
+  .callout-list li::before { content: '✓'; color: var(--green); font-weight: 700; position: absolute; left: 0; }
+  .callout-list code {
+    font-family: var(--font-mono); font-size: 11.5px; background: var(--blue-dim); color: var(--blue);
+    padding: 1px 5px; border-radius: 3px;
+  }
+
+  /* ---------- Roadmap timeline ---------- */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 8px; top: 6px; bottom: 6px; width: 2px; background: var(--border-bright);
+  }
+  .timeline-item { position: relative; padding-bottom: 18px; }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .timeline-item::before {
+    content: ''; position: absolute; left: -28px; top: 3px; width: 12px; height: 12px; border-radius: 50%;
+    background: var(--surface); border: 2px solid var(--gold);
+  }
+  .timeline-item .t-head { display: flex; align-items: center; gap: 10px; margin-bottom: 3px; }
+  .timeline-item .t-num { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); }
+  .timeline-item .t-title { font-weight: 600; font-size: 13.5px; }
+  .timeline-item .t-status {
+    font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--gold); background: var(--gold-dim); border-radius: 4px; padding: 1px 7px;
+  }
+  .timeline-item .t-desc { color: var(--text-dim); font-size: 12.5px; line-height: 1.6; max-width: 640px; }
+
+  /* ---------- Footer ---------- */
+  .footer {
+    margin-top: 40px; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 20px; font-size: 12.5px; line-height: 1.8; color: var(--text-dim);
+  }
+  .footer code {
+    font-family: var(--font-mono); font-size: 11.5px; background: var(--surface); color: var(--text);
+    padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border);
+  }
+
+  .legend { display: flex; gap: 20px; flex-wrap: wrap; margin: 14px 0 30px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); }
+  .legend-swatch { width: 12px; height: 12px; border-radius: 3px; }
+
+  @media (max-width: 760px) {
+    body { padding: 18px; }
+    h1 { font-size: 24px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1 class="animate" style="--i:0">WK WhatsApp: Estado do Projeto</h1>
+  <p class="subtitle animate" style="--i:1">base do que já existe + o que estamos construindo agora, atualizado em 20/07/2026</p>
+
+  <p class="description animate" style="--i:2">
+    Este documento é a referência de estado do WK WhatsApp: o sistema já existente (100% no navegador, lê exports do
+    WhatsApp) e a nova camada em construção, que conecta de verdade numa conta via QR code e lê contatos/mensagens
+    reais, combinando com o que já foi importado. Baseado em
+    <code>docs/superpowers/specs/2026-07-20-whatsapp-live-connection-design.md</code> e
+    <code>docs/superpowers/plans/2026-07-20-whatsapp-live-connection.md</code>.
+  </p>
+
+  <section class="diagram-shell animate" style="--i:3">
+    <p class="diagram-shell__hint">Ctrl/Cmd + roda do mouse para zoom. Arraste para navegar. Duplo clique para ajustar.</p>
+    <div class="mermaid-wrap">
+      <div class="zoom-controls">
+        <button type="button" data-action="zoom-in" title="Zoom in">+</button>
+        <button type="button" data-action="zoom-out" title="Zoom out">&minus;</button>
+        <button type="button" data-action="zoom-fit" title="Ajustar">&#8634;</button>
+        <button type="button" data-action="zoom-one" title="1:1">1:1</button>
+        <button type="button" data-action="zoom-expand" title="Abrir em tela cheia">&#x26F6;</button>
+        <span class="zoom-label">Carregando...</span>
+      </div>
+      <div class="mermaid-viewport">
+        <div class="mermaid mermaid-canvas"></div>
+      </div>
+    </div>
+    <script type="text/plain" class="diagram-source">
+      flowchart TD
+        subgraph EXIST["HOJE: já existe (100% no navegador)"]
+          EXPORT["Export do WhatsApp<br/>(.zip / .txt)"] --> PARSE["parseWhatsAppExport()"]
+          PARSE --> GROUP["groupIntoDayBlocks()"]
+          GROUP --> CAT["autoCategorize()<br/>(frequência de palavras)"]
+        end
+
+        subgraph NEW["CONSTRUINDO AGORA: conexão real"]
+          WA["WhatsApp<br/>(conta real)"] -->|QR code| BAILEYS["whatsappService.js<br/>(Baileys)"]
+          BAILEYS --> SESS["sessionManager.js<br/>(múltiplas sessões)"]
+          SESS --> API["api.js + liveSocket.js<br/>(HTTP + WebSocket)"]
+          API --> LIVEJS["live.js<br/>(frontend novo)"]
+        end
+
+        CAT --> MERGE["mergeMessages()<br/>export + ao vivo, sem duplicar"]
+        LIVEJS --> MERGE
+        MERGE --> UI["Interface WK WhatsApp<br/>busca por IA · categorias · feed por dia"]
+    </script>
+  </section>
+
+  <div class="legend animate" style="--i:4">
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--blue)"></div> já existe hoje</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--gold)"></div> em construção</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--green)"></div> ponto de convergência</div>
+  </div>
+
+  <h2 class="animate" style="--i:5">O que já existe hoje</h2>
+  <div class="grid">
+    <div class="card card--blue animate" style="--i:6">
+      <div class="title"><span class="dot"></span>Parser de export <code>parseWhatsAppExport()</code></div>
+      <div class="desc">Lê arquivos <code>.zip</code>/<code>.txt</code> exportados do WhatsApp (via fflate no navegador) e extrai data, hora, remetente e texto de cada linha.</div>
+    </div>
+    <div class="card card--blue animate" style="--i:7">
+      <div class="title"><span class="dot"></span>Agrupamento por dia <code>groupIntoDayBlocks()</code></div>
+      <div class="desc">Organiza as mensagens em blocos por data, base para toda a navegação do feed.</div>
+    </div>
+    <div class="card card--blue animate" style="--i:8">
+      <div class="title"><span class="dot"></span>Categorização automática <code>autoCategorize()</code></div>
+      <div class="desc">Heurística de frequência de palavras (estilo TF-IDF) que detecta os assuntos sozinha, sem IA de verdade.</div>
+    </div>
+    <div class="card card--blue animate" style="--i:9">
+      <div class="title"><span class="dot"></span>Busca por IA em linguagem natural <code>parseAIQuery()</code></div>
+      <div class="desc">Reconhece datas, valores, remetente e assunto em perguntas livres como "pagamentos acima de 1000 em 2025".</div>
+    </div>
+    <div class="card card--blue animate" style="--i:10">
+      <div class="title"><span class="dot"></span>Pesquisas salvas</div>
+      <div class="desc">Guarda buscas favoritas no <code>localStorage</code> do navegador para reuso rápido.</div>
+    </div>
+    <div class="card card--blue animate" style="--i:11">
+      <div class="title"><span class="dot"></span>100% estático</div>
+      <div class="desc">Sem backend: todo o processamento roda no navegador, servido apenas como arquivos estáticos pelo XAMPP.</div>
+    </div>
+  </div>
+
+  <h2 class="animate" style="--i:12">O que estamos construindo agora</h2>
+  <div class="grid">
+    <div class="card card--gold animate" style="--i:13">
+      <div class="title"><span class="dot"></span>Backend Node.js separado <code>server/</code></div>
+      <div class="desc">Processo novo, independente do XAMPP/PHP, responsável só pela conexão com o WhatsApp.</div>
+    </div>
+    <div class="card card--gold animate" style="--i:14">
+      <div class="title"><span class="dot"></span><code>sessionManager.js</code></div>
+      <div class="desc">Gerencia múltiplas sessões simultâneas. Qualquer pessoa pode conectar sua própria conta via QR, isoladas entre si.</div>
+    </div>
+    <div class="card card--gold animate" style="--i:15">
+      <div class="title"><span class="dot"></span><code>whatsappService.js</code> (Baileys)</div>
+      <div class="desc">Fala o protocolo real do WhatsApp via WebSocket (Baileys 6.7.23, estável), sem precisar de navegador/Chrome.</div>
+    </div>
+    <div class="card card--gold animate" style="--i:16">
+      <div class="title"><span class="dot"></span>API HTTP <code>api.js</code></div>
+      <div class="desc">Endpoints para criar sessão, checar status, listar contatos reais e buscar mensagens de um contato.</div>
+    </div>
+    <div class="card card--gold animate" style="--i:17">
+      <div class="title"><span class="dot"></span>WebSocket de QR/status <code>liveSocket.js</code></div>
+      <div class="desc">Empurra o QR code (como imagem) e mudanças de status para o navegador em tempo real.</div>
+    </div>
+    <div class="card card--gold animate" style="--i:18">
+      <div class="title"><span class="dot"></span>Frontend <code>live.js</code></div>
+      <div class="desc">Botão "Conectar WhatsApp", modal de QR, lista de contatos reais. Reaproveita 100% do agrupamento/categorização já existente.</div>
+    </div>
+  </div>
+
+  <h2 class="animate" style="--i:19">Decisões já confirmadas</h2>
+  <ul class="callout-list animate" style="--i:20">
+    <li>Somente <strong>leitura</strong>: o sistema nunca envia mensagens nem altera nada no WhatsApp do usuário.</li>
+    <li>Qualquer pessoa pode conectar a própria conta via QR, não é uso restrito a um único dono.</li>
+    <li>Histórico: sincroniza o que o WhatsApp entregar <strong>+</strong> combina com o export já importado, via <code>mergeMessages()</code> (dedup por data/hora/remetente/texto).</li>
+    <li>Biblioteca: <code>@whiskeysockets/baileys</code> na versão estável <code>6.7.23</code> (não a pré-lançamento <code>7.0.0-rc</code>).</li>
+    <li>Suporte a múltiplas sessões simultâneas, uma por pessoa/QR.</li>
+  </ul>
+
+  <h2 class="animate" style="--i:21">Roadmap de implementação (10 tarefas do plano)</h2>
+  <div class="timeline animate" style="--i:22">
+    <div class="timeline-item">
+      <div class="t-head"><span class="t-num">01</span><span class="t-title">Scaffold do backend</span><span class="t-status">planejado</span></div>
+      <div class="t-desc"><code>server/package.json</code>, <code>paths.js</code>, <code>app.js</code> com health check, <code>index.js</code>.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="t-head"><span class="t-num">02</span><span class="t-title">messageAdapter.js</span><span class="t-status">planejado</span></div>
+      <div class="t-desc">Conversão de mensagem Baileys → formato do <code>app.js</code>, dedup e merge com export.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="t-head"><span class="t-num">03</span><span class="t-title">sessionManager.js</span><span class="t-status">planejado</span></div>
+      <div class="t-desc">Ciclo de vida de sessões múltiplas, testável sem Baileys real (factory injetada).</div>
+    </div>
+    <div class="timeline-item">
+      <div class="t-head"><span class="t-num">04</span><span class="t-title">whatsappService.js</span><span class="t-status">planejado</span></div>
+      <div class="t-desc">Conexão real via Baileys: QR, contatos, mensagens ao vivo, logout limpa credenciais.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="t-head"><span class="t-num">05</span><span class="t-title">API HTTP</span><span class="t-status">planejado</span></div>
+      <div class="t-desc"><code>api.js</code> + <code>exportData.js</code>: rotas de sessão, contatos e mensagens combinadas.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="t-head"><span class="t-num">06</span><span class="t-title">WebSocket de QR/status</span><span class="t-status">planejado</span></div>
+      <div class="t-desc"><code>liveSocket.js</code>: empurra QR code e status da sessão em tempo real.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="t-head"><span class="t-num">07</span><span class="t-title">Auto-reconexão no boot</span><span class="t-status">planejado</span></div>
+      <div class="t-desc"><code>sessionStore.js</code>: sessões já autenticadas reconectam sozinhas ao reiniciar o servidor.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="t-head"><span class="t-num">08</span><span class="t-title">Frontend live.js</span><span class="t-status">planejado</span></div>
+      <div class="t-desc">Modal de QR, lista de contatos, carregamento da conversa reaproveitando o pipeline existente.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="t-head"><span class="t-num">09</span><span class="t-title">Markup: index.html + style.css</span><span class="t-status">planejado</span></div>
+      <div class="t-desc">Botão "Conectar WhatsApp", modal, estilos. Verificação manual no navegador.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="t-head"><span class="t-num">10</span><span class="t-title">Verificação end-to-end manual</span><span class="t-status">planejado</span></div>
+      <div class="t-desc">Checklist com conta real: reconexão, merge sem duplicar, mensagem nova ao vivo, logout, confirmação de que nada é enviado.</div>
+    </div>
+  </div>
+
+  <div class="footer animate" style="--i:23">
+    <strong>Arquivos de referência:</strong><br>
+    Spec: <code>docs/superpowers/specs/2026-07-20-whatsapp-live-connection-design.md</code><br>
+    Plano: <code>docs/superpowers/plans/2026-07-20-whatsapp-live-connection.md</code><br>
+    Sistema atual: <code>index.html</code>, <code>assets/js/app.js</code>
+  </div>
+
+</div>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  import elkLayouts from 'https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk/dist/mermaid-layout-elk.esm.min.mjs';
+
+  const config = {
+    fitPadding: 28, minHeight: 360, maxHeightPx: 960, maxHeightVh: 0.84,
+    maxInitialZoom: 1.8, minZoom: 0.08, maxZoom: 6.5, zoomStep: 0.14, readabilityFloor: 0.58
+  };
+  const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
+  let activeDrag = null;
+  addEventListener('mousemove', (e) => activeDrag?.onMove(e));
+  addEventListener('mouseup', () => { activeDrag?.onEnd(); activeDrag = null; });
+
+  const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+
+  mermaid.registerLayoutLoaders(elkLayouts);
+  mermaid.initialize({
+    startOnLoad: false, theme: 'base', look: 'classic', layout: 'elk',
+    themeVariables: {
+      fontFamily: "'DM Sans', system-ui, sans-serif",
+      fontSize: '15px',
+      primaryColor: isDark ? '#1c2a4a' : '#dbe4ff',
+      primaryBorderColor: isDark ? '#7fa6ff' : '#1e3a8a',
+      primaryTextColor: isDark ? '#e7ebf5' : '#0f1729',
+      secondaryColor: isDark ? '#3a2a10' : '#fdf1de',
+      secondaryBorderColor: isDark ? '#fbbf24' : '#b45309',
+      secondaryTextColor: isDark ? '#e7ebf5' : '#0f1729',
+      tertiaryColor: isDark ? '#123322' : '#e3f5ea',
+      tertiaryBorderColor: isDark ? '#4ade80' : '#15803d',
+      tertiaryTextColor: isDark ? '#e7ebf5' : '#0f1729',
+      lineColor: isDark ? '#93a1b8' : '#5b6577',
+      noteBkgColor: isDark ? '#182338' : '#f6f7fb',
+      noteTextColor: isDark ? '#e7ebf5' : '#0f1729',
+      noteBorderColor: isDark ? '#fbbf24' : '#b45309'
+    }
+  });
+
+  function initDiagram(shell) {
+    const wrap = shell.querySelector('.mermaid-wrap');
+    const viewport = shell.querySelector('.mermaid-viewport');
+    const canvas = shell.querySelector('.mermaid-canvas');
+    const source = shell.querySelector('.diagram-source');
+    const label = shell.querySelector('.zoom-label');
+    if (!wrap || !viewport || !canvas || !source || !label) return;
+
+    let zoom = 1, fitMode = 'contain', panX = 0, panY = 0, svgW = 0, svgH = 0;
+    let sx = 0, sy = 0, spx = 0, spy = 0;
+    let touchDist = 0, touchCx = 0, touchCy = 0;
+
+    function constrainPan() {
+      const vpW = viewport.clientWidth, vpH = viewport.clientHeight;
+      const rW = svgW * zoom, rH = svgH * zoom, pad = config.fitPadding;
+      panX = (rW + pad * 2 <= vpW) ? (vpW - rW) / 2 : clamp(panX, vpW - rW - pad, pad);
+      panY = (rH + pad * 2 <= vpH) ? (vpH - rH) / 2 : clamp(panY, vpH - rH - pad, pad);
+    }
+    function applyTransform() {
+      const svg = canvas.querySelector('svg');
+      if (!svg || !svgW) return;
+      constrainPan();
+      svg.style.width = (svgW * zoom) + 'px';
+      svg.style.height = (svgH * zoom) + 'px';
+      canvas.style.transform = `translate(${panX}px, ${panY}px)`;
+      label.textContent = Math.round(zoom * 100) + '% · ' + fitMode;
+    }
+    function canPan() {
+      const rW = svgW * zoom, rH = svgH * zoom;
+      return rW + config.fitPadding * 2 > viewport.clientWidth || rH + config.fitPadding * 2 > viewport.clientHeight;
+    }
+    function computeSmartFit() {
+      const vpW = viewport.clientWidth, vpH = viewport.clientHeight;
+      const aW = Math.max(80, vpW - config.fitPadding * 2), aH = Math.max(80, vpH - config.fitPadding * 2);
+      const contain = Math.min(aW / svgW, aH / svgH);
+      let z = contain, mode = 'contain';
+      if (contain < config.readabilityFloor) {
+        const chartR = svgH / svgW, vpR = vpH / Math.max(vpW, 1);
+        if (chartR >= vpR) { z = aW / svgW; mode = 'width-priority'; } else { z = aH / svgH; mode = 'height-priority'; }
+      }
+      return { zoom: clamp(z, config.minZoom, config.maxInitialZoom), mode };
+    }
+    function fitDiagram() {
+      if (!svgW) return;
+      const fit = computeSmartFit();
+      zoom = fit.zoom; fitMode = fit.mode;
+      panX = (viewport.clientWidth - svgW * zoom) / 2;
+      panY = (viewport.clientHeight - svgH * zoom) / 2;
+      applyTransform();
+    }
+    function setOneToOne() {
+      zoom = clamp(1, config.minZoom, config.maxZoom); fitMode = '1:1';
+      panX = (viewport.clientWidth - svgW * zoom) / 2;
+      panY = (viewport.clientHeight - svgH * zoom) / 2;
+      applyTransform();
+    }
+    function zoomAround(factor, cx, cy) {
+      const next = clamp(zoom * factor, config.minZoom, config.maxZoom);
+      const ratio = next / zoom;
+      panX = cx - ratio * (cx - panX); panY = cy - ratio * (cy - panY);
+      zoom = next; fitMode = 'custom';
+      applyTransform();
+    }
+    function readSvgNaturalSize(svg) {
+      let w = 0, h = 0;
+      if (svg.viewBox?.baseVal?.width > 0) { w = svg.viewBox.baseVal.width; h = svg.viewBox.baseVal.height; }
+      if (!w) { w = parseFloat(svg.getAttribute('width')) || 0; h = parseFloat(svg.getAttribute('height')) || 0; }
+      if (!w) { const b = svg.getBBox(); w = b.width; h = b.height; }
+      if (!w) { const r = svg.getBoundingClientRect(); w = r.width || 1000; h = r.height || 700; }
+      if (!svg.getAttribute('viewBox')) svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      return { w, h };
+    }
+    function setAdaptiveHeight() {
+      if (!svgW) return;
+      const usableW = Math.max(280, wrap.getBoundingClientRect().width - 2);
+      const idealH = (svgH / svgW) * usableW + config.fitPadding * 2;
+      const maxVp = Math.floor(innerHeight * config.maxHeightVh);
+      const hardMax = Math.min(config.maxHeightPx, Math.max(config.minHeight + 40, maxVp));
+      wrap.style.height = Math.round(clamp(idealH, config.minHeight, hardMax)) + 'px';
+    }
+    function openInNewTab() {
+      const svg = canvas.querySelector('svg');
+      if (!svg) return;
+      const clone = svg.cloneNode(true);
+      clone.style.width = ''; clone.style.height = '';
+      const bg = isDark ? '#0b1220' : '#f6f7fb';
+      const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Diagrama</title><style>
+      body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+      background:${bg};padding:40px;box-sizing:border-box}
+      svg{max-width:100%;max-height:90vh;height:auto}
+      </style></head><body>${clone.outerHTML}</body></html>`;
+      open(URL.createObjectURL(new Blob([html], { type: 'text/html' })), '_blank');
+    }
+    async function render() {
+      try {
+        const code = source.textContent.trim();
+        if (!code) { label.textContent = 'Erro: fonte vazia'; return; }
+        const id = 'diagram-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+        const { svg } = await mermaid.render(id, code);
+        const parsed = new DOMParser().parseFromString(svg, 'text/html');
+        const parsedSvg = parsed.body.querySelector('svg');
+        if (!parsedSvg) { label.textContent = 'Erro: sem SVG'; return; }
+        canvas.replaceChildren(document.adoptNode(parsedSvg));
+        const svgNode = canvas.querySelector('svg');
+        if (!svgNode) { label.textContent = 'Erro: sem SVG'; return; }
+        const size = readSvgNaturalSize(svgNode);
+        svgW = size.w; svgH = size.h;
+        svgNode.removeAttribute('width'); svgNode.removeAttribute('height');
+        svgNode.style.maxWidth = 'none'; svgNode.style.display = 'block';
+        setAdaptiveHeight(); fitDiagram();
+      } catch (err) {
+        console.error('Mermaid render failed:', err);
+        label.textContent = 'Erro: ' + (err.message || 'falha ao renderizar');
+      }
+    }
+    const actions = {
+      'zoom-in': () => zoomAround(1 + config.zoomStep, viewport.clientWidth / 2, viewport.clientHeight / 2),
+      'zoom-out': () => zoomAround(1 / (1 + config.zoomStep), viewport.clientWidth / 2, viewport.clientHeight / 2),
+      'zoom-fit': fitDiagram, 'zoom-one': setOneToOne, 'zoom-expand': openInNewTab
+    };
+    Object.entries(actions).forEach(([action, handler]) => {
+      wrap.querySelector(`[data-action="${action}"]`)?.addEventListener('click', handler);
+    });
+    viewport.addEventListener('dblclick', fitDiagram);
+    viewport.addEventListener('wheel', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const rect = viewport.getBoundingClientRect();
+        const factor = e.deltaY < 0 ? 1 + config.zoomStep : 1 / (1 + config.zoomStep);
+        zoomAround(factor, e.clientX - rect.left, e.clientY - rect.top);
+        return;
+      }
+      if (canPan()) { e.preventDefault(); panX -= e.deltaX; panY -= e.deltaY; applyTransform(); }
+    }, { passive: false });
+    viewport.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.zoom-controls') || !canPan()) return;
+      wrap.classList.add('is-panning');
+      sx = e.clientX; sy = e.clientY; spx = panX; spy = panY;
+      e.preventDefault();
+      activeDrag = {
+        onMove: (ev) => { panX = spx + (ev.clientX - sx); panY = spy + (ev.clientY - sy); applyTransform(); },
+        onEnd: () => wrap.classList.remove('is-panning')
+      };
+    });
+    viewport.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; spx = panX; spy = panY; }
+      else if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX, dy = e.touches[0].clientY - e.touches[1].clientY;
+        touchDist = Math.sqrt(dx * dx + dy * dy);
+        const r = viewport.getBoundingClientRect();
+        touchCx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - r.left;
+        touchCy = (e.touches[0].clientY + e.touches[1].clientY) / 2 - r.top;
+      }
+    }, { passive: true });
+    viewport.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1 && canPan()) {
+        if (touchDist > 0) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; spx = panX; spy = panY; touchDist = 0; }
+        e.preventDefault();
+        panX = spx + (e.touches[0].clientX - sx); panY = spy + (e.touches[0].clientY - sy);
+        applyTransform();
+      } else if (e.touches.length === 2 && touchDist > 0) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX, dy = e.touches[0].clientY - e.touches[1].clientY;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        zoomAround(d / touchDist, touchCx, touchCy);
+        touchDist = d;
+      }
+    }, { passive: false });
+    new ResizeObserver(() => { if (svgW) { setAdaptiveHeight(); fitDiagram(); } }).observe(wrap);
+    render();
+  }
+  document.querySelectorAll('.diagram-shell').forEach(initDiagram);
+</script>
+</body>
+</html>
