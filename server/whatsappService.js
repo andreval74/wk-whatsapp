@@ -49,7 +49,11 @@ export function createBaileysConnection(sessionId, handlers, deps = {}) {
           fsPromises.rm(path.join(AUTH_ROOT, sessionId), { recursive: true, force: true }).catch(() => {});
         }
         handlers.onClose({ loggedOut });
-        if (!loggedOut) start();
+        if (!loggedOut) {
+          start().catch((err) => {
+            console.error('whatsappService: falha ao tentar reconectar a sessão', sessionId, err);
+          });
+        }
       }
     });
 

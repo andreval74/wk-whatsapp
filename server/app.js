@@ -4,9 +4,13 @@ import { createApiRouter } from './api.js';
 export function createApp(sessionManager = null) {
   const app = express();
 
-  // CORS middleware
+  // CORS middleware - restrict to known local origins only
+  const allowlist = ['http://localhost', 'http://127.0.0.1'];
   app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    const origin = req.headers.origin;
+    if (origin && allowlist.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    }
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     if (req.method === 'OPTIONS') {

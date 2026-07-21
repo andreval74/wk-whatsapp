@@ -152,3 +152,31 @@ test('makeSocket é chamado com versão obtida de fetchVersion', async () => {
   assert.deepStrictEqual(call.version, [2, 3000, 1]);
   assert.ok(call.auth, 'auth state deve estar presente');
 });
+
+test('reconexão com fetchVersion falhando loga erro sem crashar', async () => {
+  const { deps, fakeSock } = makeDeps();
+  const errors = [];
+  const originalError = console.error;
+  console.error = (...args) => errors.push(args);
+  try {
+    let callCount = 0;
+    deps.fetchVersion = async () => {
+      callCount++;
+      if (callCount > 1) throw new Error('rede indisponível');
+      return { version: [2, 3000, 1] };
+    };
+    createBaileysConnection('s1', { onQR() {}, onOpen() {}, onClose() {} }, deps);
+    await flush();
+    fakeSock.ev.emit('connection.update', {
+      connection: 'close',
+      lastDisconnect: { error: { output: { statusCode: null } } },
+    });
+    await flush();
+    assert.strictEqual(errors.length, 1);
+    assert.strictEqual(errors[0][0], 'whatsappService: falha ao tentar reconectar a sessão');
+    assert.strictEqual(errors[0][1], 's1');
+    assert.ok(errors[0][2] instanceof Error);
+  } finally {
+    console.error = originalError;
+  }
+});
