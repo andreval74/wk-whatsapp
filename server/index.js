@@ -13,6 +13,6 @@ const server = http.createServer(app);
 attachLiveSocket(server, sessionManager);
 restoreExistingSessions(sessionManager);
 
-server.listen(PORT, () => {
+server.listen(PORT, '127.0.0.1', () => {
   console.log(`WK WhatsApp server ouvindo na porta ${PORT}`);
 });
