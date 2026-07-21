@@ -16,6 +16,7 @@
         <div class="dzIcon">📎</div>
         <div class="dzText">Anexe um export do WhatsApp<br>(.zip ou .txt) — clique ou arraste aqui</div>
       </div>
+      <button id="liveBtn" type="button">📶 Conectar WhatsApp (ao vivo)</button>
       <input id="fileInput" type="file" accept=".zip,.txt,.json">
       <div id="fileName"></div>
       <button id="genBtn">Gerar relatório por assunto</button>
@@ -52,7 +53,18 @@
   </div>
 </div>
 
+<div id="liveModal" class="live-modal">
+  <div class="live-modal-content">
+    <button id="liveCloseBtn" class="live-close" type="button">✕</button>
+    <h2>Conectar WhatsApp</h2>
+    <div id="liveStatus" class="live-status"></div>
+    <img id="liveQrImg" class="live-qr" alt="QR code do WhatsApp">
+    <div id="liveContactList" class="live-contact-list"></div>
+  </div>
+</div>
+
 <script src="assets/js/fflate.js"></script>
 <script src="assets/js/app.js"></script>
+<script src="assets/js/live.js"></script>
 </body>
 </html>
