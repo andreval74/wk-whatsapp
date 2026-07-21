@@ -1,6 +1,6 @@
 import path from 'node:path';
 import fsPromises from 'node:fs/promises';
-import makeWASocketReal, { useMultiFileAuthState, DisconnectReason } from '@whiskeysockets/baileys';
+import makeWASocketReal, { useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } from '@whiskeysockets/baileys';
 import { AUTH_ROOT } from './paths.js';
 import { mapBaileysMessage } from './messageAdapter.js';
 
@@ -9,6 +9,7 @@ export function createBaileysConnection(sessionId, handlers, deps = {}) {
     makeSocket = makeWASocketReal,
     authStateFactory = useMultiFileAuthState,
     disconnectReason = DisconnectReason,
+    fetchVersion = fetchLatestBaileysVersion,
   } = deps;
 
   const contacts = new Map();
@@ -32,7 +33,8 @@ export function createBaileysConnection(sessionId, handlers, deps = {}) {
 
   async function start() {
     const { state, saveCreds } = await authStateFactory(path.join(AUTH_ROOT, sessionId));
-    sock = makeSocket({ auth: state });
+    const { version } = await fetchVersion();
+    sock = makeSocket({ auth: state, version });
 
     sock.ev.on('creds.update', saveCreds);
 

@@ -19,12 +19,17 @@ function makeFakeSock() {
 
 function makeDeps() {
   const fakeSock = makeFakeSock();
+  const makeSocketCalls = [];
   const deps = {
-    makeSocket: () => fakeSock,
+    makeSocket: (opts) => {
+      makeSocketCalls.push(opts);
+      return fakeSock;
+    },
     authStateFactory: async () => ({ state: {}, saveCreds: () => {} }),
     disconnectReason: { loggedOut: 'LOGGED_OUT' },
+    fetchVersion: async () => ({ version: [2, 3000, 1] }),
   };
-  return { deps, fakeSock };
+  return { deps, fakeSock, makeSocketCalls };
 }
 
 test('encaminha o QR recebido em connection.update para handlers.onQR', async () => {
@@ -136,4 +141,14 @@ test('logout apaga a pasta de credenciais salva em AUTH_ROOT/sessionId', async (
   }
 
   assert.strictEqual(deleted, true);
+});
+
+test('makeSocket é chamado com versão obtida de fetchVersion', async () => {
+  const { deps, makeSocketCalls } = makeDeps();
+  createBaileysConnection('s1', { onQR() {}, onOpen() {}, onClose() {} }, deps);
+  await flush();
+  assert.strictEqual(makeSocketCalls.length, 1);
+  const call = makeSocketCalls[0];
+  assert.deepStrictEqual(call.version, [2, 3000, 1]);
+  assert.ok(call.auth, 'auth state deve estar presente');
 });
