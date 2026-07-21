@@ -61,3 +61,27 @@ test('fecha o socket quando a sessao nao existe', async () => {
 
   await new Promise((resolve) => server.close(resolve));
 });
+
+test('fecha o socket quando getStatus lanca erro', async () => {
+  const sm = {
+    getStatus: (id) => {
+      if (id === 's1') {
+        throw new Error('Erro de teste no getStatus');
+      }
+      return null;
+    },
+  };
+  const server = http.createServer();
+  attachLiveSocket(server, sm, { intervalMs: 20 });
+  await new Promise((resolve) => server.listen(0, resolve));
+  const { port } = server.address();
+
+  const ws = new WebSocket(`ws://127.0.0.1:${port}/live?session=s1`);
+  await new Promise((resolve, reject) => {
+    ws.on('close', resolve);
+    ws.on('error', reject);
+    setTimeout(() => reject(new Error('timeout esperando close')), 2000);
+  });
+
+  await new Promise((resolve) => server.close(resolve));
+});

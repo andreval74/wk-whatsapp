@@ -40,8 +40,10 @@ export function attachLiveSocket(httpServer, sessionManager, opts = {}) {
       }
     };
 
-    poll().catch(() => {
+    poll().catch((err) => {
+      console.error('liveSocket: erro no loop de polling da sessão', sessionId, err);
       running = false;
+      if (ws.readyState === ws.OPEN) ws.close();
     });
 
     ws.on('close', () => {
