@@ -1,5 +1,5 @@
 import path from 'node:path';
-import fs from 'node:fs';
+import fsPromises from 'node:fs/promises';
 import makeWASocketReal, { useMultiFileAuthState, DisconnectReason } from '@whiskeysockets/baileys';
 import { AUTH_ROOT } from './paths.js';
 import { mapBaileysMessage } from './messageAdapter.js';
@@ -44,11 +44,7 @@ export function createBaileysConnection(sessionId, handlers, deps = {}) {
         const statusCode = lastDisconnect?.error?.output?.statusCode;
         const loggedOut = statusCode === disconnectReason.loggedOut;
         if (loggedOut) {
-          try {
-            fs.rmSync(path.join(AUTH_ROOT, sessionId), { recursive: true, force: true });
-          } catch (e) {
-            // ignore errors
-          }
+          fsPromises.rm(path.join(AUTH_ROOT, sessionId), { recursive: true, force: true }).catch(() => {});
         }
         handlers.onClose({ loggedOut });
         if (!loggedOut) start();

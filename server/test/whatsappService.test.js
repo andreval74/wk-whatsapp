@@ -121,7 +121,19 @@ test('logout apaga a pasta de credenciais salva em AUTH_ROOT/sessionId', async (
     connection: 'close',
     lastDisconnect: { error: { output: { statusCode: 'LOGGED_OUT' } } },
   });
-  await flush();
 
-  assert.strictEqual(fs.existsSync(authDir), false);
+  // Poll for the async deletion to complete
+  const maxWaitMs = 500;
+  const pollIntervalMs = 10;
+  const startTime = Date.now();
+  let deleted = false;
+  while (Date.now() - startTime < maxWaitMs) {
+    if (!fs.existsSync(authDir)) {
+      deleted = true;
+      break;
+    }
+    await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
+  }
+
+  assert.strictEqual(deleted, true);
 });
