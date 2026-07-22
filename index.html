@@ -176,5 +176,28 @@
   <script src="assets/js/fflate.js"></script>
   <script src="assets/js/app.js"></script>
   <script src="assets/js/live.js"></script>
+
+  <!-- Source Selection Tab Controller -->
+  <script>
+    const sourceFileBtn = document.getElementById('sourceFileBtn');
+    const sourceLiveBtn = document.getElementById('sourceLiveBtn');
+    const fileSection = document.getElementById('fileSection');
+    const liveSection = document.getElementById('liveSection');
+
+    sourceFileBtn.addEventListener('click', () => {
+      sourceFileBtn.classList.add('active');
+      sourceLiveBtn.classList.remove('active');
+      fileSection.style.display = '';
+      liveSection.style.display = 'none';
+    });
+
+    sourceLiveBtn.addEventListener('click', () => {
+      sourceLiveBtn.classList.add('active');
+      sourceFileBtn.classList.remove('active');
+      fileSection.style.display = 'none';
+      liveSection.style.display = '';
+      document.getElementById('connectLiveBtn').click();
+    });
+  </script>
 </body>
 </html>
