@@ -660,5 +660,7 @@ async function init() {
   }
   loadDataset(DEFAULT_BLOCKS, DEFAULT_CAT_META, DEFAULT_TITLE);
   renderSavedList();
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('app').style.visibility = 'visible';
 }
 init();

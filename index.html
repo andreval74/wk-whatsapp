@@ -1,252 +1,70 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WK WhatsApp — Análise de Conversas</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
+<meta charset="UTF-8">
+<title>WK WhatsApp — Relatórios por assunto</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <div id="app" class="app-wrapper">
-    <!-- ─── HEADER: Logo, MVP badge, status, controls ─── -->
-    <header class="app-header">
-      <div class="header-content">
-        <div class="header-left">
-          <div class="logo-badge">⚡</div>
-          <div class="logo-text">
-            <h1>WK WhatsApp</h1>
-            <p>Elementor Exporter</p>
-          </div>
-          <div class="mvp-badge">MVP v1.8</div>
-        </div>
-
-        <div class="header-center">
-          <span class="status-dot"></span>
-          <span class="status-text">Aguardando</span>
-        </div>
-
-        <div class="header-right">
-          <button class="header-btn icon-only" title="Histórico">
-            🕐
-          </button>
-          <button class="header-btn" id="settingsBtn" title="Configurações">
-            ⚙️ Configurar
-          </button>
-          <button class="header-btn danger" id="clearAllBtn" title="Limpar tudo">
-            🗑️ Limpar
-          </button>
-        </div>
+<div id="loadingScreen">Carregando conversa padrão...</div>
+<div id="app" style="visibility:hidden">
+  <div id="sidebar">
+    <div id="uploadPanel">
+      <div class="upTitle">Gerar novo relatório</div>
+      <div id="dropzone">
+        <div class="dzIcon">📎</div>
+        <div class="dzText">Anexe um export do WhatsApp<br>(.zip ou .txt) — clique ou arraste aqui</div>
       </div>
-    </header>
-
-    <!-- ─── FEATURE BAR: Suporta HTML, Imagem, LP, SEO, IA ─── -->
-    <div class="feature-bar">
-      <p>Suporta HTML · Imagem · LP (Landing Page) · SEO automático · Prompt para IA</p>
+      <button id="liveBtn" type="button">📶 Conectar WhatsApp (ao vivo)</button>
+      <input id="fileInput" type="file" accept=".zip,.txt,.json">
+      <div id="fileName"></div>
+      <button id="genBtn">Gerar relatório por assunto</button>
+      <div id="uploadStatus"></div>
+      <button id="restoreBtn">↺ Voltar para a conversa padrão</button>
     </div>
-
-    <!-- ─── MAIN: 3-column grid (Entrada, Análise, Exportação) ─── -->
-    <main class="app-main">
-      <div class="content-grid">
-        <!-- ENTRADA: File upload / Image upload -->
-        <section class="main-card entrada-card">
-          <div class="card-header">
-            <span class="card-icon">📄</span>
-            <h2>ENTRADA</h2>
-          </div>
-          <p class="card-subtitle">HTML - Imagem</p>
-
-          <div class="card-tabs">
-            <button class="tab-btn active" data-tab="upload">
-              📋 HTML
-            </button>
-            <button class="tab-btn" data-tab="image">
-              🖼️ IMAGEM
-            </button>
-          </div>
-
-          <div id="uploadTab" class="card-tab-content">
-            <div class="dropzone" id="dropzone">
-              <div class="dropzone-icon">📁</div>
-              <p class="dropzone-title">Cole HTML, arraste ou clique</p>
-              <p class="dropzone-subtitle">Arquivos .html, .htm</p>
-            </div>
-            <input type="file" id="fileInput" accept=".html,.htm,.zip,.txt,.json" style="display:none">
-            <div id="fileName" class="file-info" style="display:none"></div>
-            <div id="uploadStatus" class="upload-msg"></div>
-          </div>
-
-          <div id="imageTab" class="card-tab-content" style="display:none">
-            <div class="dropzone" id="imageDropzone">
-              <div class="dropzone-icon">🖼️</div>
-              <p class="dropzone-title">Cole imagem, arraste ou clique</p>
-              <p class="dropzone-subtitle">Arquivos .png, .jpg, .jpeg</p>
-            </div>
-            <input type="file" id="imageInput" accept=".png,.jpg,.jpeg" style="display:none">
-            <div id="imageName" class="file-info" style="display:none"></div>
-          </div>
-
-          <div class="card-actions">
-            <button class="btn btn-outline" id="visualizarBtn">
-              👁️ Visualizar
-            </button>
-            <button class="btn btn-outline" id="analisarBtn">
-              🔍 Analisar
-            </button>
-            <button id="genBtn" class="btn btn-primary" style="display:none;" title="Processar">
-              ⚡ Processar
-            </button>
-            <button id="restoreBtn" class="btn btn-secondary" style="display:none;">
-              ↺ Padrão
-            </button>
-          </div>
-        </section>
-
-        <!-- ANÁLISE: Conversation composition -->
-        <section class="main-card analise-card">
-          <div class="card-header">
-            <span class="card-icon">📊</span>
-            <h2>ANÁLISE</h2>
-          </div>
-          <p class="card-subtitle">Composição da Conversa</p>
-
-          <div class="analise-content">
-            <div class="chart-placeholder">
-              <div class="chart-icon">📈</div>
-              <p class="chart-text">Cole HTML e clique em "Analisar" para ver as estatísticas</p>
-            </div>
-            <div id="convSub" class="result-meta"></div>
-          </div>
-
-          <div class="card-actions">
-            <button class="btn btn-primary" id="converterBtn">
-              ⚡ Converter →
-            </button>
-          </div>
-        </section>
-
-        <!-- EXPORTAÇÃO: JSON export & download -->
-        <section class="main-card exportacao-card">
-          <div class="card-header">
-            <span class="card-icon">⬇️</span>
-            <h2>EXPORTAÇÃO</h2>
-          </div>
-          <p class="card-subtitle">JSON Elementor v0.4 - SEO - Prompt</p>
-
-          <div class="export-content">
-            <div class="export-placeholder">
-              <div class="placeholder-icon">📋</div>
-              <p>O JSON aparecerá aqui após a conversão</p>
-            </div>
-          </div>
-
-          <div class="card-actions">
-            <button class="btn btn-outline" id="visualizarExportBtn">
-              👁️ Visualização
-            </button>
-            <button class="btn btn-outline danger" id="downloadBtn">
-              ⬇️ Baixar
-            </button>
-          </div>
-        </section>
-      </div>
-
-      <!-- ─── SEARCH: Query, date range, category filters (hidden) ─── -->
-      <section class="search-section" id="searchSection" style="display:none;">
-        <div class="search-container">
-          <div class="search-bar">
-            <input id="search" type="text" placeholder="Buscar por palavra-chave...">
-            <button id="clearBtn" class="btn btn-outline">Limpar</button>
-          </div>
-
-          <div class="filters">
-            <input id="dateFrom" type="date" title="Data inicial">
-            <input id="dateTo" type="date" title="Data final">
-            <input id="aiInput" type="text" placeholder="Pergunta com IA...">
-            <button id="aiBtn" class="btn btn-primary">Perguntar</button>
-          </div>
-
-          <div class="category-filter">
-            <label>Filtrar por Assunto:</label>
-            <div id="catlist" class="categories-filter"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ─── RESULTS: Message feed, day blocks (hidden) ─── -->
-      <section class="results-section" id="resultsSection" style="display:none;">
-        <div class="results-header">
-          <h2>📊 Resultados</h2>
-          <div id="resultInfo" class="result-meta"></div>
-        </div>
-
-        <div class="results-container">
-          <div id="feed" class="feed"></div>
-          <div id="empty" class="empty-state">
-            <div class="empty-icon">📭</div>
-            <p>Nenhuma conversa encontrada</p>
-          </div>
-          <div id="loadMoreWrap" style="text-align: center; padding: 20px; display:none;">
-            <button id="loadMoreBtn" class="btn btn-outline">Carregar Mais</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- ─── SAVED SEARCHES (hidden) ─── -->
-      <section id="savedSearchesSection" style="display:none;">
-        <h2>⭐ Pesquisas Salvas</h2>
-        <div id="savedlist"></div>
-      </section>
-    </main>
-
-    <!-- ─── FOOTER: Version, current conversation title ─── -->
-    <footer class="app-footer">
-      <div class="footer-content">
-        <div class="footer-left">
-          <p>WK WhatsApp · MVP v1.8.0 · Elementor JSON v0.4</p>
-        </div>
-        <div class="footer-right">
-          <span id="convTitle" class="footer-stat">Aguardando...</span>
-        </div>
-      </div>
-    </footer>
+    <h1 id="convTitle">Conversa com Eliseu</h1>
+    <div class="sub" id="convSub">carregando...</div>
+    <div id="sidebarScroll">
+      <div class="section-title">Assuntos</div>
+      <div id="catlist"></div>
+      <div class="section-title">Minhas pesquisas salvas</div>
+      <div id="savedlist"></div>
+    </div>
   </div>
+  <div id="main">
+    <div id="topbar">
+      <div class="aiRow">
+        <input id="aiInput" type="text" placeholder='Pergunte algo, ex: "pagamentos acima de 1000 em 2025" ou "conversas sobre o Rodrigo em julho de 2024"'>
+        <button id="aiBtn">Perguntar</button>
+        <button id="saveBtn">💾 Salvar pesquisa</button>
+        <button id="downloadBtn">⬇️ Baixar relatório (.json)</button>
+      </div>
+      <div class="filterRow">
+        <input id="search" type="text" placeholder="busca simples por palavra...">
+        <input id="dateFrom" class="dateinput" type="date" title="De">
+        <input id="dateTo" class="dateinput" type="date" title="Até">
+        <button id="clearBtn">Limpar filtros</button>
+      </div>
+    </div>
+    <div id="chips"></div>
+    <div id="resultInfo"></div>
+    <div id="feed"></div>
+  </div>
+</div>
 
-  <script src="assets/js/fflate.js"></script>
-  <script src="assets/js/app.js"></script>
+<div id="liveModal" class="live-modal">
+  <div class="live-modal-content">
+    <button id="liveCloseBtn" class="live-close" type="button">✕</button>
+    <h2>Conectar WhatsApp</h2>
+    <div id="liveStatus" class="live-status"></div>
+    <img id="liveQrImg" class="live-qr" alt="QR code do WhatsApp">
+    <div id="liveContactList" class="live-contact-list"></div>
+  </div>
+</div>
 
-  <script>
-    /* Tab switching between HTML and Image upload */
-    const uploadTab = document.getElementById('uploadTab');
-    const imageTab = document.getElementById('imageTab');
-    const tabBtns = document.querySelectorAll('.card-tabs .tab-btn');
-
-    tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        tabBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        if (btn.dataset.tab === 'upload') {
-          uploadTab.style.display = 'block';
-          imageTab.style.display = 'none';
-        } else {
-          uploadTab.style.display = 'none';
-          imageTab.style.display = 'block';
-        }
-      });
-    });
-
-    /* Dropzone for HTML files */
-    document.getElementById('dropzone').addEventListener('click', () => {
-      document.getElementById('fileInput').click();
-    });
-
-    /* Dropzone for Image files */
-    if (document.getElementById('imageDropzone')) {
-      document.getElementById('imageDropzone').addEventListener('click', () => {
-        document.getElementById('imageInput').click();
-      });
-    }
-  </script>
+<script src="assets/js/fflate.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/live.js"></script>
 </body>
 </html>
