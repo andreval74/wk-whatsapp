@@ -157,6 +157,8 @@
     font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
     color: var(--gold); background: var(--gold-dim); border-radius: 4px; padding: 1px 7px;
   }
+  .timeline-item .t-status--done { color: var(--green); background: var(--green-dim); }
+  .timeline-item.is-done::before { border-color: var(--green); }
   .timeline-item .t-desc { color: var(--text-dim); font-size: 12.5px; line-height: 1.6; max-width: 640px; }
 
   /* ---------- Footer ---------- */
@@ -303,47 +305,51 @@
 
   <h2 class="animate" style="--i:21">Roadmap de implementação (10 tarefas do plano)</h2>
   <div class="timeline animate" style="--i:22">
-    <div class="timeline-item">
-      <div class="t-head"><span class="t-num">01</span><span class="t-title">Scaffold do backend</span><span class="t-status">planejado</span></div>
+    <div class="timeline-item is-done">
+      <div class="t-head"><span class="t-num">01</span><span class="t-title">Scaffold do backend</span><span class="t-status t-status--done">concluído</span></div>
       <div class="t-desc"><code>server/package.json</code>, <code>paths.js</code>, <code>app.js</code> com health check, <code>index.js</code>.</div>
     </div>
-    <div class="timeline-item">
-      <div class="t-head"><span class="t-num">02</span><span class="t-title">messageAdapter.js</span><span class="t-status">planejado</span></div>
+    <div class="timeline-item is-done">
+      <div class="t-head"><span class="t-num">02</span><span class="t-title">messageAdapter.js</span><span class="t-status t-status--done">concluído</span></div>
       <div class="t-desc">Conversão de mensagem Baileys → formato do <code>app.js</code>, dedup e merge com export.</div>
     </div>
-    <div class="timeline-item">
-      <div class="t-head"><span class="t-num">03</span><span class="t-title">sessionManager.js</span><span class="t-status">planejado</span></div>
+    <div class="timeline-item is-done">
+      <div class="t-head"><span class="t-num">03</span><span class="t-title">sessionManager.js</span><span class="t-status t-status--done">concluído</span></div>
       <div class="t-desc">Ciclo de vida de sessões múltiplas, testável sem Baileys real (factory injetada).</div>
     </div>
-    <div class="timeline-item">
-      <div class="t-head"><span class="t-num">04</span><span class="t-title">whatsappService.js</span><span class="t-status">planejado</span></div>
+    <div class="timeline-item is-done">
+      <div class="t-head"><span class="t-num">04</span><span class="t-title">whatsappService.js</span><span class="t-status t-status--done">concluído</span></div>
       <div class="t-desc">Conexão real via Baileys: QR, contatos, mensagens ao vivo, logout limpa credenciais.</div>
     </div>
-    <div class="timeline-item">
-      <div class="t-head"><span class="t-num">05</span><span class="t-title">API HTTP</span><span class="t-status">planejado</span></div>
+    <div class="timeline-item is-done">
+      <div class="t-head"><span class="t-num">05</span><span class="t-title">API HTTP</span><span class="t-status t-status--done">concluído</span></div>
       <div class="t-desc"><code>api.js</code> + <code>exportData.js</code>: rotas de sessão, contatos e mensagens combinadas.</div>
     </div>
-    <div class="timeline-item">
-      <div class="t-head"><span class="t-num">06</span><span class="t-title">WebSocket de QR/status</span><span class="t-status">planejado</span></div>
+    <div class="timeline-item is-done">
+      <div class="t-head"><span class="t-num">06</span><span class="t-title">WebSocket de QR/status</span><span class="t-status t-status--done">concluído</span></div>
       <div class="t-desc"><code>liveSocket.js</code>: empurra QR code e status da sessão em tempo real.</div>
     </div>
-    <div class="timeline-item">
-      <div class="t-head"><span class="t-num">07</span><span class="t-title">Auto-reconexão no boot</span><span class="t-status">planejado</span></div>
+    <div class="timeline-item is-done">
+      <div class="t-head"><span class="t-num">07</span><span class="t-title">Auto-reconexão no boot</span><span class="t-status t-status--done">concluído</span></div>
       <div class="t-desc"><code>sessionStore.js</code>: sessões já autenticadas reconectam sozinhas ao reiniciar o servidor.</div>
     </div>
-    <div class="timeline-item">
-      <div class="t-head"><span class="t-num">08</span><span class="t-title">Frontend live.js</span><span class="t-status">planejado</span></div>
+    <div class="timeline-item is-done">
+      <div class="t-head"><span class="t-num">08</span><span class="t-title">Frontend live.js</span><span class="t-status t-status--done">concluído</span></div>
       <div class="t-desc">Modal de QR, lista de contatos, carregamento da conversa reaproveitando o pipeline existente.</div>
     </div>
-    <div class="timeline-item">
-      <div class="t-head"><span class="t-num">09</span><span class="t-title">Markup: index.html + style.css</span><span class="t-status">planejado</span></div>
-      <div class="t-desc">Botão "Conectar WhatsApp", modal, estilos. Verificação manual no navegador.</div>
+    <div class="timeline-item is-done">
+      <div class="t-head"><span class="t-num">09</span><span class="t-title">Markup: index.html + style.css</span><span class="t-status t-status--done">concluído</span></div>
+      <div class="t-desc">Botão "Conectar WhatsApp", modal, estilos. Verificado manualmente: QR code real renderizado na tela.</div>
     </div>
     <div class="timeline-item">
-      <div class="t-head"><span class="t-num">10</span><span class="t-title">Verificação end-to-end manual</span><span class="t-status">planejado</span></div>
-      <div class="t-desc">Checklist com conta real: reconexão, merge sem duplicar, mensagem nova ao vivo, logout, confirmação de que nada é enviado.</div>
+      <div class="t-head"><span class="t-num">10</span><span class="t-title">Verificação end-to-end manual</span><span class="t-status">aguardando você</span></div>
+      <div class="t-desc">Falta só isso: escanear o QR com o celular, ver a lista de contatos reais, abrir uma conversa e conferir o merge sem duplicar.</div>
     </div>
   </div>
+
+  <ul class="callout-list animate" style="margin-top:16px">
+    <li><strong>Bônus da verificação no navegador:</strong> encontramos e corrigimos 4 bugs reais que o plano não previa: CORS bloqueando o frontend de chamar o backend; versão do protocolo do Baileys desatualizada travando a conexão real; CORS liberado demais (trocado para permitir só localhost); servidor escutando em todas as interfaces de rede em vez de só localhost.</li>
+  </ul>
 
   <div class="footer animate" style="--i:23">
     <strong>Arquivos de referência:</strong><br>
