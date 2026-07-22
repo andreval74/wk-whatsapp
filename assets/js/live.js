@@ -63,12 +63,13 @@ function openLiveSocket(sessionId) {
         connected = true;
         clearTimeout(qrTimeout);
         liveQrImg.style.display = 'none';
-        liveStatusEl.textContent = 'Conectado! Carregando contatos...';
-        loadLiveContacts(sessionId);
+        liveStatusEl.textContent = 'Conectado! Sincronizando conversas...';
       } else if (msg.status === 'desconectado') {
         clearTimeout(qrTimeout);
         liveStatusEl.textContent = 'Sessão desconectada.';
       }
+    } else if (msg.type === 'contacts') {
+      renderLiveContacts(sessionId, msg.contacts);
     }
   };
   liveSocket.onerror = () => {
@@ -77,11 +78,9 @@ function openLiveSocket(sessionId) {
   };
 }
 
-async function loadLiveContacts(sessionId) {
-  const res = await fetch(`${LIVE_API}/session/${sessionId}/contacts`);
-  const data = await res.json();
-  liveStatusEl.textContent = `${data.contacts.length} contatos encontrados. Clique em um para gerar o relatório.`;
-  liveContactList.innerHTML = data.contacts
+function renderLiveContacts(sessionId, contacts) {
+  liveStatusEl.textContent = `${contacts.length} conversas. Clique em uma para gerar o relatório.`;
+  liveContactList.innerHTML = contacts
     .map((c) => `<div class="live-contact" data-id="${encodeURIComponent(c.id)}" data-name="${escapeHtml(c.name)}">${escapeHtml(c.name)}</div>`)
     .join('');
   liveContactList.querySelectorAll('.live-contact').forEach((el) => {
