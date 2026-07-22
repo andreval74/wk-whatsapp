@@ -78,11 +78,28 @@ function openLiveSocket(sessionId) {
   };
 }
 
+const AVATAR_COLORS = ['#e17076', '#7bc862', '#65aadd', '#a695e7', '#ee7aae', '#6ec9cb', '#f7a76c'];
+
+function avatarColor(str) {
+  let h = 0;
+  for (const ch of str) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return AVATAR_COLORS[h % AVATAR_COLORS.length];
+}
+
+function initial(name) {
+  return (name.trim()[0] || '?').toUpperCase();
+}
+
 function renderLiveContacts(sessionId, contacts) {
   liveStatusEl.textContent = `${contacts.length} conversas. Clique em uma para gerar o relatório.`;
-  liveContactList.innerHTML = contacts
-    .map((c) => `<div class="live-contact" data-id="${encodeURIComponent(c.id)}" data-name="${escapeHtml(c.name)}">${escapeHtml(c.name)}</div>`)
-    .join('');
+  liveContactList.innerHTML = contacts.map((c) => `
+    <div class="live-contact" data-id="${encodeURIComponent(c.id)}" data-name="${escapeHtml(c.name)}">
+      <div class="live-avatar" style="background:${avatarColor(c.id)}">${escapeHtml(initial(c.name))}</div>
+      <div class="live-contact-body">
+        <div class="live-contact-name">${escapeHtml(c.name)}</div>
+        <div class="live-contact-preview">${escapeHtml(c.lastText || 'Sem mensagens recentes')}</div>
+      </div>
+    </div>`).join('');
   liveContactList.querySelectorAll('.live-contact').forEach((el) => {
     el.addEventListener('click', () => openLiveContact(sessionId, decodeURIComponent(el.dataset.id), el.dataset.name));
   });
