@@ -70,7 +70,11 @@ export function createBaileysConnection(sessionId, handlers, deps = {}) {
   start();
 
   return {
-    getContacts: () => Array.from(contacts.values()),
+    getContacts: () => Array.from(contacts.values()).map((c) => {
+      const msgs = messagesByContact.get(c.id);
+      const last = msgs && msgs.length ? msgs[msgs.length - 1] : null;
+      return { id: c.id, name: c.name, lastText: last?.text ?? null, lastTime: last?.time ?? null };
+    }),
     getMessages: (contactId) => messagesByContact.get(contactId) || [],
     close: () => sock?.end(undefined),
   };

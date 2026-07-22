@@ -79,7 +79,28 @@ test('getContacts reflete contacts.upsert', async () => {
   const conn = createBaileysConnection('s1', { onQR() {}, onOpen() {}, onClose() {} }, deps);
   await flush();
   fakeSock.ev.emit('contacts.upsert', [{ id: 'a@s.whatsapp.net', name: 'Eliseu' }]);
-  assert.deepStrictEqual(conn.getContacts(), [{ id: 'a@s.whatsapp.net', name: 'Eliseu' }]);
+  assert.deepStrictEqual(conn.getContacts(), [{ id: 'a@s.whatsapp.net', name: 'Eliseu', lastText: null, lastTime: null }]);
+});
+
+test('getContacts inclui lastText e lastTime da ultima mensagem', async () => {
+  const { deps, fakeSock } = makeDeps();
+  const conn = createBaileysConnection('s1', { onQR() {}, onOpen() {}, onClose() {} }, deps);
+  await flush();
+  fakeSock.ev.emit('contacts.upsert', [{ id: 'a@s.whatsapp.net', name: 'Eliseu' }]);
+  fakeSock.ev.emit('messages.upsert', {
+    messages: [{
+      key: { fromMe: false, remoteJid: 'a@s.whatsapp.net' },
+      messageTimestamp: 1700000000,
+      message: { conversation: 'Oi, como vai?' },
+    }],
+  });
+  const contacts = conn.getContacts();
+  assert.strictEqual(contacts.length, 1);
+  assert.strictEqual(contacts[0].id, 'a@s.whatsapp.net');
+  assert.strictEqual(contacts[0].name, 'Eliseu');
+  assert.strictEqual(contacts[0].lastText, 'Oi, como vai?');
+  assert.strictEqual(typeof contacts[0].lastTime, 'string');
+  assert.ok(contacts[0].lastTime.match(/^\d{2}:\d{2}$/), 'lastTime deve estar no formato HH:MM');
 });
 
 test('getMessages acumula mensagens de messages.upsert no formato do app.js', async () => {
