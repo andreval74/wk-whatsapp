@@ -21,19 +21,23 @@
       <div class="header-content">
         <div class="header-left">
           <div class="logo">
-            <span class="logo-icon">📱</span>
+            <span class="logo-icon">⚡</span>
             <div class="logo-text">
               <h1>WK WhatsApp</h1>
-              <p>Análise de Conversas</p>
+              <p>Elementor Exporter</p>
             </div>
           </div>
         </div>
+        <div class="header-status">
+          <span class="status-dot"></span>
+          <span class="status-text">Aguardando</span>
+        </div>
         <div class="header-right">
           <button class="header-btn" id="settingsBtn" title="Configurações">
-            <span>⚙️</span>
+            ⚙️
           </button>
-          <button class="header-btn" id="clearAllBtn" title="Limpar tudo">
-            <span>🗑️</span>
+          <button class="header-btn danger" id="clearAllBtn" title="Limpar tudo">
+            🗑️
           </button>
         </div>
       </div>
@@ -41,138 +45,175 @@
 
     <!-- Main Content -->
     <main class="app-main">
-      <div class="container">
-        <!-- Left Column -->
-        <aside class="sidebar">
-          <!-- Data Source Card -->
-          <section class="card">
-            <div class="card-header">
-              <h2>📎 Fonte de Dados</h2>
-            </div>
-            <div class="card-body">
-              <div class="source-tabs">
-                <button class="tab-btn active" data-tab="file">
-                  <span>📄</span> Arquivo
-                </button>
-                <button class="tab-btn" data-tab="live">
-                  <span>📶</span> Ao Vivo
-                </button>
-              </div>
+      <div class="content-grid">
+        <!-- ENTRADA Card -->
+        <section class="main-card entrada-card">
+          <div class="card-icon">📄</div>
+          <div class="card-title">ENTRADA</div>
+          <div class="card-subtitle">HTML - Arquivo</div>
 
-              <!-- File Tab -->
-              <div id="fileTab" class="tab-content active">
-                <div class="dropzone" id="dropzone">
-                  <div class="dropzone-icon">📁</div>
-                  <div class="dropzone-text">
-                    <strong>Arraste arquivos aqui</strong>
-                    <small>ou clique para selecionar</small>
-                  </div>
-                </div>
-                <input type="file" id="fileInput" accept=".zip,.txt,.json" style="display:none">
-                <div id="fileName" class="file-info" style="display:none"></div>
-                <div id="uploadStatus" class="upload-msg"></div>
-                <div class="button-group">
-                  <button id="genBtn" class="btn btn-primary" style="display:none">Processar Arquivo</button>
-                  <button id="restoreBtn" class="btn btn-secondary" style="display:none">Voltar Padrão</button>
-                </div>
-              </div>
+          <div class="card-tabs">
+            <button class="tab-btn active" data-tab="upload">
+              📋 HTML
+            </button>
+            <button class="tab-btn" data-tab="live">
+              📶 Ao Vivo
+            </button>
+          </div>
 
-              <!-- Live Tab -->
-              <div id="liveTab" class="tab-content" style="display:none">
-                <p class="text-muted" style="margin-bottom: 16px; text-align: center;">
-                  Conecte seu WhatsApp via QR code para sincronização em tempo real
-                </p>
-                <button id="connectLiveBtn" class="btn btn-primary">Conectar WhatsApp</button>
-              </div>
+          <div id="uploadTab" class="card-tab-content">
+            <div class="dropzone" id="dropzone">
+              <div class="dropzone-icon">📁</div>
+              <p class="dropzone-title">Cole HTML, arraste ou clique</p>
+              <p class="dropzone-subtitle">Arquivos .zip, .txt ou .json</p>
             </div>
-          </section>
+            <input type="file" id="fileInput" accept=".zip,.txt,.json" style="display:none">
+            <div id="fileName" class="file-info" style="display:none"></div>
+            <div id="uploadStatus" class="upload-msg"></div>
+          </div>
 
-          <!-- Categories Card -->
-          <section class="card">
-            <div class="card-header">
-              <h3>📑 Assuntos</h3>
+          <div id="liveTab" class="card-tab-content" style="display:none">
+            <div class="live-placeholder">
+              <div class="placeholder-icon">📱</div>
+              <p>Conecte seu WhatsApp via QR code</p>
             </div>
-            <div class="card-body">
-              <div id="catlist" class="categories-list"></div>
-              <div id="noCategories" class="text-muted" style="text-align: center; padding: 16px;">
-                Sem categorias carregadas
-              </div>
-            </div>
-          </section>
-        </aside>
+            <button id="connectLiveBtn" class="btn btn-primary" style="width: 100%;">Conectar WhatsApp</button>
+          </div>
 
-        <!-- Right Column -->
-        <div class="main-content">
-          <!-- Search Card -->
-          <section class="card">
-            <div class="card-header">
-              <h2>🔍 Pesquisa & Filtros</h2>
-            </div>
-            <div class="card-body">
-              <div class="search-section">
-                <div class="search-bar">
-                  <input id="aiInput" type="text" placeholder="Pergunta com IA: 'pagamentos maiores de 1000'...">
-                  <button id="aiBtn" class="btn btn-primary">Perguntar</button>
-                </div>
-                <div class="filters">
-                  <input id="search" type="text" class="filter-input" placeholder="Buscar palavra...">
-                  <input id="dateFrom" type="date" class="filter-input" title="De">
-                  <input id="dateTo" type="date" class="filter-input" title="Até">
-                  <button id="clearBtn" class="btn btn-outline">Limpar</button>
-                </div>
-                <div class="actions">
-                  <button id="saveBtn" class="btn btn-outline">💾 Salvar</button>
-                  <button id="downloadBtn" class="btn btn-outline">⬇️ Baixar</button>
-                </div>
-              </div>
-              <div id="convSub" class="result-meta"></div>
-            </div>
-          </section>
+          <div class="card-actions">
+            <button class="btn btn-outline" id="visualizarBtn" title="Visualizar">
+              👁️ Visualizar
+            </button>
+            <button id="genBtn" class="btn btn-primary" style="display:none" title="Processar">
+              ⚡ Processar
+            </button>
+            <button id="restoreBtn" class="btn btn-secondary" style="display:none">
+              ↺ Padrão
+            </button>
+          </div>
+        </section>
 
-          <!-- Results Card -->
-          <section class="card">
-            <div class="card-header">
-              <h2>📊 Resultados</h2>
-              <div id="resultInfo" class="result-meta"></div>
-            </div>
-            <div class="card-body feed-container">
-              <div id="feed" class="feed"></div>
-              <div id="empty" class="empty-state" style="display:none;">
-                <div class="empty-icon">📭</div>
-                <p>Nenhuma conversa carregada</p>
-              </div>
-              <div id="loadMoreWrap" style="text-align: center; padding: 20px; display:none;">
-                <button id="loadMoreBtn" class="btn btn-outline">Carregar Mais</button>
-              </div>
-            </div>
-          </section>
+        <!-- ANÁLISE Card -->
+        <section class="main-card analise-card">
+          <div class="card-icon">📊</div>
+          <div class="card-title">ANÁLISE</div>
+          <div class="card-subtitle">Composição da Conversa</div>
 
-          <!-- Saved Searches Card -->
-          <section class="card" id="savedSearchesSection" style="display:none;">
-            <div class="card-header">
-              <h2>⭐ Pesquisas Salvas</h2>
+          <div class="analise-content">
+            <div class="chart-placeholder">
+              <div class="chart-icon">📈</div>
             </div>
-            <div class="card-body">
-              <div id="savedlist"></div>
-              <div id="noSaved" class="text-muted" style="text-align: center;">
-                Nenhuma pesquisa salva
+            <div class="analise-stats">
+              <div class="stat-item">
+                <span class="stat-label">Total de Mensagens</span>
+                <span class="stat-value" id="totalMsgs">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Dias Analisados</span>
+                <span class="stat-value" id="totalDays">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Assuntos Identificados</span>
+                <span class="stat-value" id="totalCats">0</span>
               </div>
             </div>
-          </section>
-        </div>
+          </div>
+
+          <div id="convSub" class="result-meta"></div>
+
+          <div class="card-actions">
+            <button class="btn btn-outline" id="analisarBtn" title="Ver Análise">
+              🔍 Analisar
+            </button>
+            <button class="btn btn-primary" id="converterBtn" title="Converter">
+              ⚡ Converter →
+            </button>
+          </div>
+        </section>
+
+        <!-- EXPORTAÇÃO Card -->
+        <section class="main-card exportacao-card">
+          <div class="card-icon">⬇️</div>
+          <div class="card-title">EXPORTAÇÃO</div>
+          <div class="card-subtitle">JSON - SEO - Prompt</div>
+
+          <div class="export-content">
+            <div class="export-placeholder">
+              <div class="placeholder-icon">📋</div>
+              <p>O JSON aparecerá aqui após a conversão</p>
+            </div>
+          </div>
+
+          <div class="export-info">
+            <p class="text-muted" style="font-size: 12px; line-height: 1.6;">
+              Os resultados da análise serão exportados em formato JSON otimizado para SEO e Prompts de IA, prontos para uso em Elementor.
+            </p>
+          </div>
+
+          <div class="card-actions">
+            <button class="btn btn-outline" id="visualizarExportBtn" title="Visualizar JSON">
+              👁️ Visualização
+            </button>
+            <button class="btn btn-primary" id="downloadBtn" title="Baixar">
+              ⬇️ Baixar
+            </button>
+          </div>
+        </section>
       </div>
+
+      <!-- Search & Filters Section (Hidden until data loads) -->
+      <section class="search-section" id="searchSection" style="display:none;">
+        <div class="search-container">
+          <div class="search-bar">
+            <input id="search" type="text" placeholder="Buscar por palavra-chave...">
+            <button id="clearBtn" class="btn btn-outline">Limpar</button>
+          </div>
+
+          <div class="filters">
+            <input id="dateFrom" type="date" title="Data inicial">
+            <input id="dateTo" type="date" title="Data final">
+            <input id="aiInput" type="text" placeholder="Pergunta com IA...">
+            <button id="aiBtn" class="btn btn-primary">Perguntar</button>
+          </div>
+
+          <div class="category-filter">
+            <label>Filtrar por Assunto:</label>
+            <div id="catlist" class="categories-filter"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Results Section (Hidden until data loads) -->
+      <section class="results-section" id="resultsSection" style="display:none;">
+        <div class="results-header">
+          <h2>📊 Resultados</h2>
+          <div id="resultInfo" class="result-meta"></div>
+        </div>
+
+        <div class="results-container">
+          <div id="feed" class="feed"></div>
+          <div id="empty" class="empty-state">
+            <div class="empty-icon">📭</div>
+            <p>Nenhuma conversa encontrada</p>
+          </div>
+          <div id="loadMoreWrap" style="text-align: center; padding: 20px; display:none;">
+            <button id="loadMoreBtn" class="btn btn-outline">Carregar Mais</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Saved Searches (Hidden) -->
+      <section id="savedSearchesSection" style="display:none;">
+        <h2>⭐ Pesquisas Salvas</h2>
+        <div id="savedlist"></div>
+      </section>
     </main>
 
     <!-- Footer -->
     <footer class="app-footer">
       <div class="footer-content">
-        <div class="footer-left">
-          <p>WK WhatsApp</p>
-          <small>Sistema de análise de conversas inteligente</small>
-        </div>
-        <div class="footer-right">
-          <span id="convTitle" class="footer-stat">Conversa: Carregando...</span>
-        </div>
+        <p>WK WhatsApp Elementor Exporter - MVP v1.0</p>
+        <span id="convTitle" class="footer-stat">Carregando...</span>
       </div>
     </footer>
   </div>
@@ -192,29 +233,29 @@
   <script src="assets/js/app.js"></script>
   <script src="assets/js/live.js"></script>
 
-  <!-- Tab Switching Controller -->
   <script>
-    const fileTab = document.getElementById('fileTab');
+    // Tab switching
+    const uploadTab = document.getElementById('uploadTab');
     const liveTab = document.getElementById('liveTab');
-    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabBtns = document.querySelectorAll('.card-tabs .tab-btn');
 
     tabBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         tabBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
-        if (btn.dataset.tab === 'file') {
-          fileTab.style.display = 'block';
+        if (btn.dataset.tab === 'upload') {
+          uploadTab.style.display = 'block';
           liveTab.style.display = 'none';
         } else {
-          fileTab.style.display = 'none';
+          uploadTab.style.display = 'none';
           liveTab.style.display = 'block';
           document.getElementById('connectLiveBtn').click();
         }
       });
     });
 
-    // Dropzone click handler
+    // Dropzone
     document.getElementById('dropzone').addEventListener('click', () => {
       document.getElementById('fileInput').click();
     });
