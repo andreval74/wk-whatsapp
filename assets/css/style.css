@@ -545,6 +545,17 @@ code, pre {
   background: rgba(255, 107, 107, 0.1);
 }
 
+.btn-secondary {
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-hover);
+  border-color: var(--gold);
+}
+
 /* ─── SEARCH SECTION ─── */
 .search-section {
   margin-bottom: var(--space-2xl);
