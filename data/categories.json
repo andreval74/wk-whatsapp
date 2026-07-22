@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Trabalho",
+    "count": 78,
+    "color": "#00a884"
+  },
+  {
+    "name": "Pessoal",
+    "count": 52,
+    "color": "#00a884"
+  },
+  {
+    "name": "Financeiro",
+    "count": 45,
+    "color": "#00a884"
+  },
+  {
+    "name": "Projeto",
+    "count": 38,
+    "color": "#00a884"
+  },
+  {
+    "name": "Social",
+    "count": 32,
+    "color": "#00a884"
+  }
+]

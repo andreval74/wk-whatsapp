@@ -1,0 +1,116 @@
+[
+  {
+    "date": "22/07/2026",
+    "category": "Trabalho",
+    "messages": [
+      {
+        "sender": "Eliseu",
+        "text": "Oi! Tudo bem? Vamos conversar sobre o projeto?"
+      },
+      {
+        "sender": "Você",
+        "text": "Oi Eliseu! Tudo certo! Sim, vamos."
+      },
+      {
+        "sender": "Eliseu",
+        "text": "Preciso que você revise o código que mandei ontem"
+      },
+      {
+        "sender": "Você",
+        "text": "Claro, já reviso. Quanto tempo você dá?"
+      },
+      {
+        "sender": "Eliseu",
+        "text": "Até amanhã de manhã está ótimo!"
+      }
+    ]
+  },
+  {
+    "date": "21/07/2026",
+    "category": "Financeiro",
+    "messages": [
+      {
+        "sender": "Você",
+        "text": "Eliseu, recebi o boleto do projeto"
+      },
+      {
+        "sender": "Eliseu",
+        "text": "Perfeito! Consegue pagar até quinta?"
+      },
+      {
+        "sender": "Você",
+        "text": "Vou verificar o fluxo e confirmo"
+      },
+      {
+        "sender": "Eliseu",
+        "text": "Tranquilo, sem pressa"
+      }
+    ]
+  },
+  {
+    "date": "20/07/2026",
+    "category": "Pessoal",
+    "messages": [
+      {
+        "sender": "Eliseu",
+        "text": "Quando você vem aqui em casa?"
+      },
+      {
+        "sender": "Você",
+        "text": "Está difícil no momento, vou remarcar"
+      },
+      {
+        "sender": "Eliseu",
+        "text": "Tudo bem, sem problema! A gente marca depois"
+      },
+      {
+        "sender": "Você",
+        "text": "Valeu pela compreensão!"
+      }
+    ]
+  },
+  {
+    "date": "19/07/2026",
+    "category": "Projeto",
+    "messages": [
+      {
+        "sender": "Você",
+        "text": "Finalizei a documentação do projeto"
+      },
+      {
+        "sender": "Eliseu",
+        "text": "Já vejo aqui. Deixa eu revisar"
+      },
+      {
+        "sender": "Eliseu",
+        "text": "Ficou muito bom! Só precisa de alguns ajustes"
+      },
+      {
+        "sender": "Você",
+        "text": "Manda aí, qual ajuste você quer?"
+      }
+    ]
+  },
+  {
+    "date": "18/07/2026",
+    "category": "Social",
+    "messages": [
+      {
+        "sender": "Eliseu",
+        "text": "Você vai no evento de amanhã?"
+      },
+      {
+        "sender": "Você",
+        "text": "Sim! A que horas você vai?"
+      },
+      {
+        "sender": "Eliseu",
+        "text": "Vou por volta das 19h"
+      },
+      {
+        "sender": "Você",
+        "text": "Ótimo! A gente se vê lá então"
+      }
+    ]
+  }
+]
