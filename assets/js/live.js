@@ -68,7 +68,7 @@ function openLiveSocket(sessionId) {
         clearTimeout(qrTimeout);
         liveStatusEl.textContent = 'Sessão desconectada.';
       }
-    } else if (msg.type === 'contacts') {
+    } else if (msg.type === 'contacts' && connected) {
       renderLiveContacts(sessionId, msg.contacts);
     }
   };
