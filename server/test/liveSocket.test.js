@@ -85,3 +85,45 @@ test('fecha o socket quando getStatus lanca erro', async () => {
 
   await new Promise((resolve) => server.close(resolve));
 });
+
+test('empurra lista de contatos quando muda', async () => {
+  let contactCallCount = 0;
+  const sm = {
+    getStatus: (id) => {
+      if (id !== 's1') return null;
+      return { status: 'conectado', qr: null };
+    },
+    getContacts: (id) => {
+      if (id !== 's1') return null;
+      contactCallCount++;
+      if (contactCallCount === 1) {
+        return [];
+      }
+      return [{ id: 'a@s.whatsapp.net', name: 'Eliseu' }];
+    },
+  };
+  const server = http.createServer();
+  attachLiveSocket(server, sm, { intervalMs: 20 });
+  await new Promise((resolve) => server.listen(0, resolve));
+  const { port } = server.address();
+
+  const received = [];
+  const ws = new WebSocket(`ws://127.0.0.1:${port}/live?session=s1`);
+  await new Promise((resolve, reject) => {
+    ws.on('message', (data) => {
+      received.push(JSON.parse(data.toString()));
+      if (received.some((m) => m.type === 'contacts' && m.contacts.length > 0)) {
+        resolve();
+      }
+    });
+    ws.on('error', reject);
+    setTimeout(() => reject(new Error('timeout esperando contacts')), 3000);
+  });
+
+  ws.close();
+  await new Promise((resolve) => server.close(resolve));
+
+  const contactsMsg = received.find((m) => m.type === 'contacts' && m.contacts.length > 0);
+  assert(contactsMsg, 'deveria ter recebido mensagem de contatos');
+  assert.deepStrictEqual(contactsMsg.contacts, [{ id: 'a@s.whatsapp.net', name: 'Eliseu' }]);
+});

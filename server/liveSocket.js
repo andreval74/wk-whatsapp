@@ -13,7 +13,8 @@ export function attachLiveSocket(httpServer, sessionManager, opts = {}) {
       return;
     }
 
-    let lastPayload = null;
+    let lastStatusPayload = null;
+    let lastContactsPayload = null;
     let running = true;
 
     const poll = async () => {
@@ -32,10 +33,22 @@ export function attachLiveSocket(httpServer, sessionManager, opts = {}) {
           payload = { type: 'status', status: status.status };
         }
         const serialized = JSON.stringify(payload);
-        if (serialized !== lastPayload) {
-          lastPayload = serialized;
+        if (serialized !== lastStatusPayload) {
+          lastStatusPayload = serialized;
           ws.send(serialized);
         }
+
+        // Push contacts if available and changed
+        const contacts = sessionManager.getContacts?.(sessionId);
+        if (contacts !== undefined && contacts !== null) {
+          const contactsPayload = { type: 'contacts', contacts };
+          const contactsSerialized = JSON.stringify(contactsPayload);
+          if (contactsSerialized !== lastContactsPayload) {
+            lastContactsPayload = contactsSerialized;
+            ws.send(contactsSerialized);
+          }
+        }
+
         await new Promise((resolve) => setTimeout(resolve, intervalMs));
       }
     };
