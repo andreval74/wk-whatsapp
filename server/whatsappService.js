@@ -34,7 +34,7 @@ export function createBaileysConnection(sessionId, handlers, deps = {}) {
   async function start() {
     const { state, saveCreds } = await authStateFactory(path.join(AUTH_ROOT, sessionId));
     const { version } = await fetchVersion();
-    sock = makeSocket({ auth: state, version });
+    sock = makeSocket({ auth: state, version, syncFullHistory: true });
 
     sock.ev.on('creds.update', saveCreds);
 

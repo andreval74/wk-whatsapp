@@ -153,6 +153,15 @@ test('makeSocket é chamado com versão obtida de fetchVersion', async () => {
   assert.ok(call.auth, 'auth state deve estar presente');
 });
 
+test('makeSocket é chamado com syncFullHistory: true', async () => {
+  const { deps, makeSocketCalls } = makeDeps();
+  createBaileysConnection('s1', { onQR() {}, onOpen() {}, onClose() {} }, deps);
+  await flush();
+  assert.strictEqual(makeSocketCalls.length, 1);
+  const call = makeSocketCalls[0];
+  assert.strictEqual(call.syncFullHistory, true);
+});
+
 test('reconexão com fetchVersion falhando loga erro sem crashar', async () => {
   const { deps, fakeSock } = makeDeps();
   const errors = [];
