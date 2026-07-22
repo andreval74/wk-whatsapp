@@ -3,59 +3,168 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WK WhatsApp — Relatórios por assunto</title>
+  <title>WK WhatsApp — Relatórios por Assunto</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <div id="loadingScreen">Carregando conversa padrão...</div>
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="loading-screen">Carregando conversa padrão...</div>
+
+  <!-- Main App -->
   <div id="app" class="app-hidden">
-    <div id="sidebar">
-      <div id="uploadPanel">
-        <div class="upTitle">Gerar novo relatório</div>
-        <div id="dropzone">
-          <div class="dzIcon">📎</div>
-          <div class="dzText">Anexe um export do WhatsApp<br>(.zip ou .txt) — clique ou arraste aqui</div>
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-container">
+        <div class="header-logo">
+          <span class="header-icon">📱</span>
+          <div class="header-title">
+            <h1>WK WhatsApp</h1>
+            <p>Relatórios por Assunto</p>
+          </div>
         </div>
-        <button id="liveBtn" type="button">📶 Conectar WhatsApp (ao vivo)</button>
-        <input id="fileInput" type="file" accept=".zip,.txt,.json">
-        <div id="fileName"></div>
-        <button id="genBtn">Gerar relatório por assunto</button>
-        <div id="uploadStatus"></div>
-        <button id="restoreBtn">↺ Voltar para a conversa padrão</button>
-      </div>
-      <h1 id="convTitle">Conversa com Eliseu</h1>
-      <div class="sub" id="convSub">carregando...</div>
-      <div id="sidebarScroll">
-        <div class="section-title">Assuntos</div>
-        <div id="catlist"></div>
-        <div class="section-title">Minhas pesquisas salvas</div>
-        <div id="savedlist"></div>
-      </div>
-    </div>
-    <div id="main">
-      <div id="topbar">
-        <div class="aiRow">
-          <input id="aiInput" type="text" placeholder='Pergunte algo, ex: "pagamentos acima de 1000 em 2025" ou "conversas sobre o Rodrigo em julho de 2024"'>
-          <button id="aiBtn">Perguntar</button>
-          <button id="saveBtn">💾 Salvar pesquisa</button>
-          <button id="downloadBtn">⬇️ Baixar relatório (.json)</button>
-        </div>
-        <div class="filterRow">
-          <input id="search" type="text" placeholder="busca simples por palavra...">
-          <input id="dateFrom" class="dateinput" type="date" title="De">
-          <input id="dateTo" class="dateinput" type="date" title="Até">
-          <button id="clearBtn">Limpar filtros</button>
+        <div class="header-actions">
+          <button id="settingsBtn" class="header-button" title="Configurações">
+            <span>⚙️</span>
+          </button>
+          <button id="clearAllBtn" class="header-button" title="Limpar tudo">
+            <span>🗑️</span>
+          </button>
         </div>
       </div>
-      <div id="chips"></div>
-      <div id="resultInfo"></div>
-      <div id="feed"></div>
-    </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <div class="app-container">
+        <!-- Source Selection & Upload -->
+        <section class="content-card">
+          <div class="card-header">
+            <h2>📎 Fonte de Dados</h2>
+            <p>Escolha como você quer carregar a conversa</p>
+          </div>
+          <div class="card-body">
+            <div class="source-buttons">
+              <button id="sourceFileBtn" class="source-button active" data-source="file">
+                <span class="source-icon">📄</span>
+                <div class="source-text">
+                  <strong>Arquivo</strong>
+                  <small>ZIP ou TXT do WhatsApp</small>
+                </div>
+              </button>
+              <button id="sourceLiveBtn" class="source-button" data-source="live">
+                <span class="source-icon">📶</span>
+                <div class="source-text">
+                  <strong>Conectar ao Vivo</strong>
+                  <small>Sincronize em tempo real</small>
+                </div>
+              </button>
+            </div>
+
+            <!-- File Upload Section -->
+            <div id="fileSection" class="source-section">
+              <div id="dropzone" class="dropzone">
+                <div class="dzIcon">📁</div>
+                <div class="dzText">Cole seu arquivo, arraste aqui<br><small>Arquivos .zip ou .txt</small></div>
+              </div>
+              <input id="fileInput" type="file" accept=".zip,.txt,.json">
+              <div id="fileName" class="file-name"></div>
+              <div id="uploadStatus" class="upload-status"></div>
+              <button id="genBtn" class="btn btn-primary">Processar Arquivo</button>
+              <button id="restoreBtn" class="btn btn-secondary">↺ Voltar Padrão</button>
+            </div>
+
+            <!-- Live Connection Section -->
+            <div id="liveSection" class="source-section" style="display: none;">
+              <button id="connectLiveBtn" class="btn btn-primary">Conectar WhatsApp</button>
+              <p class="text-muted" style="text-align: center; margin-top: 12px; font-size: 12px;">
+                Um QR code será exibido para escanear com seu WhatsApp
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Search & Filters -->
+        <section class="content-card">
+          <div class="card-header">
+            <h2>🔍 Pesquisa & Filtros</h2>
+            <p id="convSub">Carregando...</p>
+          </div>
+          <div class="card-body">
+            <div class="search-row">
+              <input id="aiInput" type="text" class="input-large" placeholder="Pergunte algo: 'pagamentos acima de 1000' ou 'conversas sobre Rodrigo'">
+              <button id="aiBtn" class="btn btn-primary">Perguntar</button>
+            </div>
+
+            <div class="filter-row">
+              <input id="search" type="text" class="input-filter" placeholder="Busca simples por palavra...">
+              <input id="dateFrom" class="input-filter" type="date" title="De">
+              <input id="dateTo" class="input-filter" type="date" title="Até">
+              <button id="clearBtn" class="btn btn-secondary">Limpar</button>
+            </div>
+
+            <div class="action-buttons">
+              <button id="saveBtn" class="btn btn-outline">💾 Salvar Pesquisa</button>
+              <button id="downloadBtn" class="btn btn-outline">⬇️ Baixar JSON</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Saved Searches -->
+        <section class="content-card" id="savedSearchesSection" style="display: none;">
+          <div class="card-header">
+            <h2>⭐ Minhas Pesquisas Salvas</h2>
+          </div>
+          <div class="card-body">
+            <div id="savedlist"></div>
+            <div id="noSaved" class="text-muted">Nenhuma pesquisa salva ainda</div>
+          </div>
+        </section>
+
+        <!-- Results -->
+        <section class="content-card">
+          <div class="card-header">
+            <div>
+              <h2>📊 Resultados</h2>
+              <div id="resultInfo" class="result-info"></div>
+            </div>
+          </div>
+          <div class="card-body feed-body">
+            <div id="feed" class="feed"></div>
+            <div id="loadMoreWrap" style="display: none;">
+              <button id="loadMoreBtn" class="btn btn-outline">Carregar Mais</button>
+            </div>
+            <div id="empty" class="empty-state">Nenhuma conversa carregada</div>
+          </div>
+        </section>
+
+        <!-- Categories Sidebar Info -->
+        <aside class="sidebar-categories">
+          <div class="card-header">
+            <h3>📑 Assuntos</h3>
+          </div>
+          <div id="catlist" class="categories-list"></div>
+        </aside>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-container">
+        <div class="footer-info">
+          <p>WK WhatsApp — Análise de Conversas</p>
+          <small>Sistema de relatórios inteligentes por assunto</small>
+        </div>
+        <div class="footer-stats">
+          <span id="convTitle" class="stat-item">Conversa: Carregando...</span>
+        </div>
+      </div>
+    </footer>
   </div>
 
+  <!-- Live Connection Modal -->
   <div id="liveModal" class="live-modal">
     <div class="live-modal-content">
-      <button id="liveCloseBtn" class="live-close" type="button">✕</button>
+      <button id="liveCloseBtn" class="live-close">✕</button>
       <h2>Conectar WhatsApp</h2>
       <div id="liveStatus" class="live-status"></div>
       <img id="liveQrImg" class="live-qr" alt="QR code do WhatsApp">
@@ -63,6 +172,7 @@
     </div>
   </div>
 
+  <!-- Scripts -->
   <script src="assets/js/fflate.js"></script>
   <script src="assets/js/app.js"></script>
   <script src="assets/js/live.js"></script>
