@@ -1,5 +1,7 @@
+/* WK WhatsApp — Dark theme with premium gold accents (WebKeeper design system) */
+
 :root {
-  /* Colors */
+  /* Colors: Dark/Gold theme — all colors should reference these tokens */
   --bg-base: #0f1419;
   --bg-surface: #1a1f2e;
   --bg-elevated: #252d3d;
@@ -247,6 +249,41 @@ code, pre {
   .content-grid {
     grid-template-columns: 1fr;
     gap: var(--space-xl);
+  }
+
+  .main-card {
+    min-height: 500px;
+    padding: var(--space-xl);
+  }
+
+  .app-header {
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .logo-text h1 {
+    font-size: 16px;
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+
+  .card-actions .btn {
+    width: 100%;
+  }
+
+  .search-bar,
+  .filters {
+    flex-direction: column;
+  }
+
+  .search-bar input,
+  .filters input {
+    width: 100%;
+  }
+
+  .msg {
+    max-width: 95%;
   }
 }
 
@@ -1043,44 +1080,80 @@ mark {
   color: var(--text-primary);
 }
 
-/* ──────────────────────────────────── RESPONSIVE ─── */
-@media (max-width: 768px) {
-  .content-grid {
-    grid-template-columns: 1fr;
-  }
+/* ──────────────────────────────────── CATEGORY FILTER (app.js generated) ─── */
+.cat-item {
+  display: inline-block;
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--bg-hover);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: var(--transition);
+  margin-right: var(--space-md);
+  margin-bottom: var(--space-md);
+}
 
-  .main-card {
-    min-height: 500px;
-    padding: var(--space-xl);
-  }
+.cat-item:hover {
+  border-color: var(--gold);
+  background: var(--bg-elevated);
+}
 
-  .app-header {
-    padding: var(--space-md) var(--space-lg);
-  }
+.cat-item.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #000;
+}
 
-  .logo-text h1 {
-    font-size: 16px;
-  }
+.cat-name {
+  font-size: 13px;
+  font-weight: 600;
+}
 
-  .card-actions {
-    flex-direction: column;
-  }
+.cat-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: var(--space-xs);
+}
 
-  .card-actions .btn {
-    width: 100%;
-  }
+/* ──────────────────────────────────── CHIPS (search filters) ─── */
+#chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin: var(--space-lg) 0;
+}
 
-  .search-bar,
-  .filters {
-    flex-direction: column;
-  }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--gold-dim);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-lg);
+  font-size: 12px;
+  color: var(--gold);
+}
 
-  .search-bar input,
-  .filters input {
-    width: 100%;
-  }
+.chip button {
+  background: none;
+  border: none;
+  color: var(--gold);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+}
 
-  .msg {
-    max-width: 95%;
-  }
+/* ──────────────────────────────────── DROPZONE DRAG-OVER ─── */
+.dropzone.dragover {
+  border-color: var(--gold);
+  background: var(--bg-elevated);
+}
+
+/* ──────────────────────────────────── EMPTY STATE ─── */
+#noSaved {
+  padding: var(--space-lg);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
 }
