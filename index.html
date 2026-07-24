@@ -4,11 +4,24 @@
 <meta charset="UTF-8">
 <title>WK WhatsApp — Relatórios por assunto</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 <div id="loadingScreen">Carregando conversa padrão...</div>
-<div id="app" style="visibility:hidden">
+<div id="appShell" style="visibility:hidden">
+  <header id="wkHeader">
+    <div class="wkHeaderLeft">
+      <span class="wkLogo">WK<span class="wkLogoAccent">WhatsApp</span></span>
+      <span class="wkVersion">v1.0</span>
+    </div>
+    <div class="wkHeaderRight">
+      <span class="wkStatus" id="wkConnStatus"><span class="wkStatusDot"></span>conversa padrão</span>
+    </div>
+  </header>
+  <div id="app">
   <div id="sidebar">
     <div id="uploadPanel">
       <div class="upTitle">Gerar novo relatório</div>
@@ -35,13 +48,13 @@
   <div id="main">
     <div id="topbar">
       <div class="aiRow">
-        <input id="aiInput" type="text" placeholder='Pergunte algo, ex: "pagamentos acima de 1000 em 2025" ou "conversas sobre o Rodrigo em julho de 2024"'>
+        <input id="aiInput" type="text" aria-label="Pergunte à IA sobre a conversa" placeholder='Pergunte algo, ex: "pagamentos acima de 1000 em 2025" ou "conversas sobre o Rodrigo em julho de 2024"'>
         <button id="aiBtn">Perguntar</button>
         <button id="saveBtn">💾 Salvar pesquisa</button>
         <button id="downloadBtn">⬇️ Baixar relatório (.json)</button>
       </div>
       <div class="filterRow">
-        <input id="search" type="text" placeholder="busca simples por palavra...">
+        <input id="search" type="text" aria-label="Busca simples por palavra" placeholder="busca simples por palavra...">
         <input id="dateFrom" class="dateinput" type="date" title="De">
         <input id="dateTo" class="dateinput" type="date" title="Até">
         <button id="clearBtn">Limpar filtros</button>
@@ -51,6 +64,12 @@
     <div id="resultInfo"></div>
     <div id="feed"></div>
   </div>
+  </div>
+  <footer id="wkFooter">
+    <span>WK WhatsApp v1.0</span>
+    <span>© 2026 WebKeeper</span>
+    <span><a href="#" id="footerHelpLink">Ajuda</a></span>
+  </footer>
 </div>
 
 <div id="liveModal" class="live-modal">
